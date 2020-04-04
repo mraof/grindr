@@ -135,6 +135,19 @@ public enum GrindstoneType implements IStringSerializable {
     return result;
   }
 
+  public int getMaxUses() {
+      if (this == EMPTY) {
+        return 0;
+      }
+
+      int result = ConfigManager.maxUses(this);
+      if (result == -100) {
+        Grindr.LOG.error("No configuration information found for Grindstone type: " + this.name);
+        return 1;
+      }
+      return result;
+  }
+
   @Override
   public String toString() {
     return name;

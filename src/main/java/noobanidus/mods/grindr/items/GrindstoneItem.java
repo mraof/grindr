@@ -1,6 +1,5 @@
 package noobanidus.mods.grindr.items;
 
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -12,7 +11,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import noobanidus.mods.grindr.blocks.GrindstoneType;
-import noobanidus.mods.grindr.config.ConfigManager;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -21,7 +19,7 @@ public class GrindstoneItem extends Item {
   private final GrindstoneType type;
 
   public GrindstoneItem(Properties properties, GrindstoneType grindstone) {
-    super(properties);
+    super(properties.defaultMaxDamage(grindstone.getMaxUses()));
     this.type = grindstone;
   }
 
@@ -60,8 +58,16 @@ public class GrindstoneItem extends Item {
         multiplier = -(100 - multiplier);
       }
 
+      int uses = type.getMaxUses();
+      boolean unbreakable = uses == 0;
+
       tooltip.add(new TranslationTextComponent("grinder.tooltip.grindstone.desc1", (neg ? TextFormatting.RED + "+" : TextFormatting.GREEN) + ((int) speed + "%")));
       tooltip.add(new TranslationTextComponent("grinder.tooltip.grindstone.desc2", (neg2 ? TextFormatting.RED: TextFormatting.GREEN + "+") + ((int) multiplier + "%")));
+      if (unbreakable) {
+        tooltip.add(new TranslationTextComponent("grinder.tooltip.grindstone.unbreakable").setStyle(new Style().setColor(TextFormatting.GREEN)));
+      } else {
+        tooltip.add(new TranslationTextComponent("grinder.tooltip.grindstone.uses", uses));
+      }
 
       if (Screen.hasShiftDown()) {
         tooltip.add(new TranslationTextComponent("grinder.tooltip.speed_desc"));
@@ -70,5 +76,12 @@ public class GrindstoneItem extends Item {
         tooltip.add(new TranslationTextComponent("grinder.tooltip.shift_for_more").setStyle(new Style().setColor(TextFormatting.GRAY)));
       }
     }
+  }
+
+  @Override
+  public boolean getIsRepairable(ItemStack grindstone, ItemStack repairMaterial) {
+    return type.getTag() != null && type.getTag().contains(repairMaterial.getItem()) ||
+            type.getItem() != null && type.getItem().asItem() == grindstone.getItem() ||
+            super.getIsRepairable(grindstone, repairMaterial);
   }
 }

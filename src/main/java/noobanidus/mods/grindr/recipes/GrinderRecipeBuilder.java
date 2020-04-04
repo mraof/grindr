@@ -2,13 +2,11 @@ package noobanidus.mods.grindr.recipes;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement.Builder;
-import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.IRequirementsStrategy;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger.Instance;
-import net.minecraft.client.util.JSONException;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -22,7 +20,6 @@ import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import net.minecraftforge.registries.ForgeRegistries;
-import netscape.javascript.JSException;
 import noobanidus.mods.grindr.Grindr;
 import noobanidus.mods.grindr.init.ModRecipes;
 

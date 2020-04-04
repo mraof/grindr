@@ -105,6 +105,7 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
   private static Random random = new Random();
   private boolean isValid = false;
   private int count = -1;
+  private int damage;
 
   @SuppressWarnings("ConstantConditions")
   public GrinderTile() {
@@ -137,12 +138,30 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
     }
 
     ItemStack stack = new ItemStack(item.get());
+    stack.setDamage(damage);
     ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, stack);
     world.addEntity(entity);
     world.setBlockState(pos, state.with(GrinderBlock.GRINDSTONE, GrindstoneType.EMPTY), 3);
     isValid = false;
     count = -1;
     curRecipe = null;
+  }
+
+  public void breakGrindstone() {
+    if (world == null || world.isRemote) {
+      return;
+    }
+
+    BlockState state = world.getBlockState(pos);
+    if (state.get(GrinderBlock.GRINDSTONE) == GrindstoneType.EMPTY) {
+      return;
+    }
+
+    world.setBlockState(pos, state.with(GrinderBlock.GRINDSTONE, GrindstoneType.EMPTY), 3);
+    isValid = false;
+    count = -1;
+    curRecipe = null;
+    world.playSound(null, (double)pos.getX() + 0.5D, pos.getY(), (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_ANVIL_DESTROY, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F);
   }
 
   public void addGrindstone(PlayerEntity player, ItemStack grindstone) {
@@ -158,6 +177,8 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
     if (!(grindstone.getItem() instanceof GrindstoneItem)) {
       return;
     }
+
+    this.damage = grindstone.getDamage();
 
     GrindstoneType type = ((GrindstoneItem) grindstone.getItem()).getType();
     grindstone.shrink(1);
@@ -198,6 +219,15 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
     return this.count;
   }
 
+  private int getMaxUses() {
+    GrindstoneType type = getGrindstone();
+    if (type == GrindstoneType.EMPTY) {
+      return -1;
+    }
+
+    return type.getMaxUses();
+  }
+
   private GrindstoneType getGrindstone() {
     return world == null ? GrindstoneType.EMPTY : world.getBlockState(pos).get(GrinderBlock.GRINDSTONE);
   }
@@ -225,6 +255,7 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
       int k = compound.getInt("RecipeAmount" + j);
       this.recipeMap.put(resourcelocation, k);
     }
+    this.damage = compound.getInt("Damage");
   }
 
   @Override
@@ -244,6 +275,7 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
       result.putInt("RecipeAmount" + i, entry.getValue());
       ++i;
     }
+    result.putInt("Damage", this.damage);
     return result;
   }
 
@@ -498,6 +530,15 @@ public class GrinderTile extends LockableTileEntity implements ISidedInventory, 
 
       itemstack.shrink(1);
       count = -1;
+
+      int maxUses = getMaxUses();
+      if (maxUses > 0) {
+        this.damage += 1;
+        if (this.damage == getMaxUses())
+        {
+          this.breakGrindstone();
+        }
+      }
     }
   }
 

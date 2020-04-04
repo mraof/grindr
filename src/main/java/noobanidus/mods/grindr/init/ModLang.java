@@ -14,6 +14,8 @@ public class ModLang {
       ctx.add("grinder.jei.grindstone", "Grindstone Installation");
       ctx.add("grinder.tooltip.grindstone.desc1", "Speed bonus: %s");
       ctx.add("grinder.tooltip.grindstone.desc2", "Output bonus: %s");
+      ctx.add("grinder.tooltip.grindstone.unbreakable", "Unbreakable");
+      ctx.add("grinder.tooltip.grindstone.uses", "Max uses: %s");
       ctx.add("grinder.tooltip.grinder.desc", "Requires a grindstone to function.");
       ctx.add("grinder.hud.right_click", "Right-Click");
       ctx.add("grinder.hud.sneak", "Sneak-");

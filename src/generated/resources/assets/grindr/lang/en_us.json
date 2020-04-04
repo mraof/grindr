@@ -11,6 +11,8 @@
   "grinder.tooltip.grinder.desc": "Requires a grindstone to function.",
   "grinder.tooltip.grindstone.desc1": "Speed bonus: %s",
   "grinder.tooltip.grindstone.desc2": "Output bonus: %s",
+  "grinder.tooltip.grindstone.unbreakable": "Unbreakable",
+  "grinder.tooltip.grindstone.uses": "Max uses: %s",
   "grinder.tooltip.result_desc": "Values in red indicate percentage chance of additional output.",
   "grinder.tooltip.shift_for_more": "[Hold Shift for more]",
   "grinder.tooltip.speed_desc": "Positive values in red mean increased processing time. Negative values in green denote decreased processing time.",
